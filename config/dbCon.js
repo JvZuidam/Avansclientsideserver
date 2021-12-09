@@ -8,22 +8,21 @@
  *******************************************************/
 
 const mongoose = require('mongoose')
-const envVar = 'test';
 
 mongoose.Promise = global.Promise;
 
-if (envVar === 'testCloud' ||envVar === 'production') {
-    mongoose.connect('mongodb+srv://admin:admin@yugiohcardcollectorclus.c2ic5.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
-        {useNewUrlParser: true})
-        .then(() => {
-            console.log("MongoDB Cloud connected")
-        })
-        .catch(err => console.log(err));
-} else if (envVar === 'test') {
+if (process.env.NODE_ENV !== 'production') {
     mongoose.connect('mongodb://localhost:27017/YugiohCardCollector',
         {useNewUrlParser: true})
         .then(() => {
             console.log("MongoDB Local connected")
+        })
+        .catch(err => console.log(err));
+} else {
+    mongoose.connect('mongodb+srv://admin:admin@yugiohcardcollectorclus.c2ic5.mongodb.net/YugiohCardCollector?retryWrites=true&w=majority',
+        {useNewUrlParser: true})
+        .then(() => {
+            console.log("MongoDB Cloud connected")
         })
         .catch(err => console.log(err));
 }
