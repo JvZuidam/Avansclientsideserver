@@ -4,6 +4,8 @@ const router = express.Router();
 
 const Deck = require("../src/deck")
 const responseMessages = require("../responseMessages")
+const moment = require("moment");
+const User = require("../src/user");
 
 router.use (bodyParser.json());
 router.use(bodyParser.urlencoded({extended: true}))
@@ -16,6 +18,26 @@ router.use(function (req, res, next) {
 });
 
 //Create a deck
+router.post("/new", (request, result) => {
+    console.log("Create a new dekc aangeroepen");
+    const userId = request.body.userId;
+    const deckName = request.body.deckName;
+
+    Deck.create({userId: userId, deckName: deckName, numberOfCards: 0, mainDeck: [], extraDeck: [], sideDeck: [], creationDate: moment().format()}, function(err, deckDocs) {
+        if (err) {
+            responseMessages.ErrorCode500(result)
+        } else {
+            User.updateOne({_id: userId}, {"$push": { "decks": deckDocs._id } }, function (err, docs) {
+                if (err || docs == null) {
+                    responseMessages.ErrorCode500(result)
+                } else {
+                    responseMessages.SuccessCode201Deck(result, deckName)
+                }
+            })
+        }
+    })
+})
+
 
 //Get all decks
 router.get("", (request, result) => {
@@ -54,7 +76,13 @@ router.delete("/:id", (request, result) => {
         if (err || docs === null) {
             responseMessages.ErrorCode412(result);
         } else {
-            responseMessages.SuccessCode200GetAll(result, docs);
+            User.updateOne({decks: deckId}, {$pull: { decks: deckId } }, function (err, docs) {
+                if (err || docs == null) {
+                    responseMessages.ErrorCode500(result)
+                } else {
+                    responseMessages.SuccessCode204(result)
+                }
+            })
         }
     })
 });

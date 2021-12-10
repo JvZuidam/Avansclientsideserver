@@ -30,7 +30,8 @@ router.post("/new", (request, result) => {
             responseMessages.ErrorCode409DuplicateUser(result);
         } else {
             User.create({firstName: firstName, lastName: lastName, username: username, email: email, password: password, creationDate: moment().format(), collections: [], decks: [], trades: []}, function (err, docs) {
-                if (err || docs == null) {
+                if (err) {
+                    console.log(err);
                     responseMessages.ErrorCode500(result);
                 } else {
                     responseMessages.SuccessCode201User(result, username)

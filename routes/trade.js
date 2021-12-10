@@ -4,6 +4,8 @@ const router = express.Router();
 
 const Trade = require("../src/trade")
 const responseMessages = require("../responseMessages")
+const User = require("../src/user");
+const moment = require("moment");
 
 
 router.use (bodyParser.json());
@@ -18,6 +20,48 @@ router.use(function (req, res, next) {
 
 
 //Create a new trade
+router.post("/new", (request, result) => {
+    console.log("Create a new trade");
+    const firstItem = "";
+    const secondItem = "";
+    const nothingValue = "";
+
+    const traderId = request.body.traderId;
+    const tradeeId = request.body.tradeeId;
+    const cardToTrade = request.body.cardToTrade;
+    const cardToReceive = request.body.cardToReceive;
+    const deckToTrade = request.body.deckToTrade;
+    const deckToReceive = request.body.deckToReceive;
+
+    if (cardToTrade == null || cardToReceive == null) {
+        // Setting the existing values up for return
+        firstItem.concat(deckToTrade);
+        secondItem.concat(deckToReceive);
+    } else if (deckToTrade == null || deckToReceive == null) {
+        // Setting the existing values up for return
+        firstItem.concat(cardToTrade);
+        secondItem.concat(cardToReceive);
+    } else {
+        responseMessages.ErrorCode412(result)
+    }
+
+    Trade.create({trader: traderId, tradee: tradeeId, cardToTrade: cardToTrade, cardToReceive: cardToReceive, deckToTrade: deckToTrade, deckToReceive: deckToReceive, creationDate: moment().format()}, function (err, tradeDocs) {
+        if (err) {
+            console.log(err);
+            responseMessages.ErrorCode500(result);
+        } else {
+            User.updateOne({_id: traderId}, {"$push": { "trades": tradeDocs._id } }, function (err, docs) {
+                if (err || docs == null) {
+                    console.log(err);
+                    responseMessages.ErrorCode500(result)
+                } else {
+                    responseMessages.SuccessCode201Trade(result, traderId, tradeeId, )
+                }
+            })
+        }
+    })
+})
+
 
 //Get all trades
 router.get("", (request, result) => {
@@ -56,7 +100,13 @@ router.delete("/:id", (request, result) => {
         if (err || docs === null) {
             responseMessages.ErrorCode412(result);
         } else {
-            responseMessages.SuccessCode200GetAll(result, docs);
+            User.updateOne({trades: tradeId}, {$pull: { trades: tradeId } }, function (err, docs) {
+                if (err || docs == null) {
+                    responseMessages.ErrorCode500(result)
+                } else {
+                    responseMessages.SuccessCode204(result)
+                }
+            })
         }
     })
 });

@@ -34,7 +34,8 @@ router.post("/new", (request, result) => {
                 responseMessages.ErrorCode404(result)
             } else {
                Card.find({card_sets : { $elemMatch: {  set_name : setName } }}, function(err, cardDocs) {
-                    if (err || cardDocs == null) {
+                   console.log(cardDocs);
+                   if (err || cardDocs == null) {
                         responseMessages.ErrorCode404(result)
                     } else {
 
