@@ -94,7 +94,7 @@ function SuccessCode200UpdateCollection(result, collectionName, locked) {
     });
 }
 
-function SuccessCode200UpdateDeck(result, deckName, mainDeck, sideDeck, extraDeck) {
+function SuccessCode200UpdateDeck(result, mainDeck, sideDeck, extraDeck, deckName = "No new Name") {
     result.status(200).json({
         code: 200,
         message: {updatedDeckName: deckName, updatedMainDeck: mainDeck, updatedSideDeck: sideDeck, updatedExtraDeck: extraDeck},
