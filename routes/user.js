@@ -55,8 +55,8 @@ router.get("", (request, result) => {
 });
 //Get user by id
 router.get("/:id", (request, result) => {
-    const userId = request.params.id;
     console.log("Get user by id aangeroepen");
+    const userId = request.params.id;
 
     User.find({_id: userId}, function (err, docs) {
         if (err || docs === null) {
@@ -68,11 +68,36 @@ router.get("/:id", (request, result) => {
 });
 
 //Update user
+router.put("/:id", (request, result) => {
+    console.log("Update user by id aangeroepen");
+    const userId = request.params.id;
+    const username = request.body.username;
+    const email = request.body.email;
+    const firstName = request.body.firstName;
+    const lastName = request.body.lastName;
+
+    User.find({_id: userId}, function(err, docs) {
+        if (err || docs == null) {
+            responseMessages.ErrorCode404(result);
+        } else {
+            User.updateOne({_id: userId}, {$set: {firstName: firstName, lastName: lastName, email: email, username: username}}, function (err, docs) {
+                if (err || docs == null) {
+                    responseMessages.ErrorCode500(result)
+                } else {
+                    responseMessages.SuccessCode200UpdateUser(result, firstName, lastName, email, username)
+                }
+            })
+        }
+    })
+
+})
+
 
 //Delete user
 router.delete("/:id", (request, result) => {
-    const userId = request.params.id;
     console.log("Delete all users aangeroepen");
+    const userId = request.params.id;
+
 
     User.deleteOne({_id: userId}, function (err, docs) {
         if (err || docs === null) {
