@@ -45,9 +45,11 @@ router.post("/new", (request, result) => {
 
 
 //Get all decks
-router.get("", (request, result) => {
+router.get("/:userid", (request, result) => {
     console.log("Get all decks aangeroepen");
-    Deck.find({}, function (err, docs) {
+    const userId = request.params.userid;
+
+    Deck.find({userId: userId}, function (err, docs) {
         if (err || docs === null) {
             responseMessages.ErrorCode412(result);
         } else {
@@ -57,11 +59,12 @@ router.get("", (request, result) => {
 });
 
 //Get a deck by Id
-router.get("/:id", (request, result) => {
+router.get("/:userid/:id", (request, result) => {
     console.log("Get a deck by id aangeroepen");
     const deckId = request.params.id;
+    const userId = request.params.userid;
 
-    Deck.find({_id: deckId}, function (err, docs) {
+    Deck.find({_id: deckId, userId: userId}, function (err, docs) {
         if (err || docs === null) {
             responseMessages.ErrorCode412(result);
         } else {
@@ -71,8 +74,9 @@ router.get("/:id", (request, result) => {
 });
 
 //Update a deck
-router.put("/:id", (request, result) => {
+router.put("/:userid/:id", (request, result) => {
     console.log("Update deck by id aangeroepen");
+    const userId = request.params.userid;
     const deckId = request.params.id;
     const mainDeckUpdate = request.body.mainDeck;
     const extraDeckUpdate = request.body.extraDeck;
@@ -80,12 +84,12 @@ router.put("/:id", (request, result) => {
     const newDeckName = request.body.deckName;
     const newCardAmount = mainDeckUpdate.length + extraDeckUpdate.length + sideDeckUpdate.length
 
-    Deck.find({_id: deckId}, function(err, docs) {
+    Deck.find({_id: deckId, userId: userId}, function(err, docs) {
         if (err || docs === null) {
             responseMessages.ErrorCode412(result);
         } else {
             //TODO: Check if newDeckName is empty and if it's not, update the deckName as well
-            Deck.updateOne({_id: deckId}, { $set: {deckName: newDeckName, mainDeck: mainDeckUpdate, extraDeck: extraDeckUpdate, sideDeck: sideDeckUpdate, numberOfCards: newCardAmount}}, function(err, docs) {
+            Deck.updateOne({_id: deckId,}, { $set: {deckName: newDeckName, mainDeck: mainDeckUpdate, extraDeck: extraDeckUpdate, sideDeck: sideDeckUpdate, numberOfCards: newCardAmount}}, function(err, docs) {
                 if (err || docs == null) {
                     responseMessages.ErrorCode500(result)
                 } else {
@@ -96,11 +100,12 @@ router.put("/:id", (request, result) => {
     })
 })
 //Delete a deck
-router.delete("/:id", (request, result) => {
+router.delete("/:userId/:id", (request, result) => {
     console.log("Delete a deck aangeroepen");
     const deckId = request.params.id;
+    const userId = request.params.userid;
 
-    Deck.deleteOne({_id: deckId}, function (err, docs) {
+    Deck.deleteOne({_id: deckId, userId: userId}, function (err, docs) {
         if (err || docs === null) {
             responseMessages.ErrorCode412(result);
         } else {
