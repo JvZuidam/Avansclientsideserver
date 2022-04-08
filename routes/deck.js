@@ -100,7 +100,7 @@ router.put("/:userid/:id", (request, result) => {
     })
 })
 //Delete a deck
-router.delete("/:userId/:id", (request, result) => {
+router.delete("/:userid/:id", (request, result) => {
     console.log("Delete a deck aangeroepen");
     const deckId = request.params.id;
     const userId = request.params.userid;
