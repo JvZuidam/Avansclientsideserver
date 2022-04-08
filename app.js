@@ -11,6 +11,7 @@ app.use("/user", require("./routes/user"));
 app.use("/deck", require("./routes/deck"));
 app.use("/collection", require("./routes/collection"));
 app.use("/trade", require("./routes/trade"));
+app.use("/auth", require("./routes/auth"))
 
 app.use(cors());
 
