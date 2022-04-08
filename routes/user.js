@@ -19,8 +19,8 @@ router.use(function (req, res, next) {
 //Create new user
 router.post("/new", (request, result) => {
     console.log("Create a new user aangeroepen");
-    const firstName = request.body.firstname;
-    const lastName = request.body.lastname;
+    const firstName = request.body.firstName;
+    const lastName = request.body.lastName;
     const email = request.body.email;
     const username = request.body.username;
     const password = request.body.password;
