@@ -118,6 +118,14 @@ function SuccessCode200UpdateTrade(result, itemToTrade, itemToReceive) {
     });
 }
 
+function SuccessCode200UpdateUser(result, firstName, lastName, email, username) {
+    result.status(200).json({
+        code: 200,
+        message: {firstName: firstName, lastName: lastName, email: email, username: username},
+        datetime: moment().format()
+    });
+}
+
 function SuccessCode201User(result, username) {
     result.status(201).json({
         code: 201,
@@ -170,6 +178,7 @@ module.exports = {
     SuccessCode200UpdateObtainedCard,
     SuccessCode200UpdateDeck,
     SuccessCode200UpdateTrade,
+    SuccessCode200UpdateUser,
     SuccessCode201User,
     SuccessCode201Collection,
     SuccessCode201Deck,
