@@ -4,14 +4,14 @@ const app = express();
 const port = process.env.PORT || 3000;
 const db = require("./config/dbCon");
 
-app.use("/card", require("./routes/card"))
+app.use("/card", require("./routes/card"));
 app.use("/set", require("./routes/set"));
 //
 app.use("/user", require("./routes/user"));
 app.use("/deck", require("./routes/deck"));
 app.use("/collection", require("./routes/collection"));
 app.use("/trade", require("./routes/trade"));
-app.use("/auth", require("./routes/auth"))
+app.use("/auth", require("./routes/auth"));
 
 app.use(cors());
 
