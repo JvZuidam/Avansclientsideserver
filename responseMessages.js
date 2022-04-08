@@ -94,6 +94,14 @@ function SuccessCode200UpdateCollection(result, collectionName, locked) {
     });
 }
 
+function SuccessCode200UpdateObtainedCard(result, cardId, obtained) {
+    result.status(200).json({
+        code: 200,
+        message: {UpdatedObtainedCard: cardId, obtainedStatus: obtained},
+        datetime: moment().format()
+    });
+}
+
 function SuccessCode200UpdateDeck(result, mainDeck, sideDeck, extraDeck, deckName = "No new Name") {
     result.status(200).json({
         code: 200,
@@ -159,6 +167,7 @@ module.exports = {
     SuccessCode200GetAll,
     SuccessCode200Auth,
     SuccessCode200UpdateCollection,
+    SuccessCode200UpdateObtainedCard,
     SuccessCode200UpdateDeck,
     SuccessCode200UpdateTrade,
     SuccessCode201User,

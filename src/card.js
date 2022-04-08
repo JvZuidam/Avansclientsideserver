@@ -8,6 +8,7 @@ const CardSchema = new Schema({
     desc: String,
     race: String,
     archetype: String,
+    obtained: Boolean,
     card_sets: [
         {
             set_name: String,

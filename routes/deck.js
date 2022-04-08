@@ -23,8 +23,12 @@ router.post("/new", (request, result) => {
     console.log("Create a new deck aangeroepen");
     const userId = request.body.userId;
     const deckName = request.body.deckName;
+    const mainDeck = request.body.mainDeck;
+    const extraDeck = request.body.extraDeck;
+    const sideDeck = request.body.sideDeck;
+    const numberOfCards = mainDeck.length + sideDeck.length + extraDeck.length;
 
-    Deck.create({userId: userId, deckName: deckName, numberOfCards: 0, mainDeck: [], extraDeck: [], sideDeck: [], creationDate: moment().format()}, function(err, deckDocs) {
+    Deck.create({userId: userId, deckName: deckName, numberOfCards: numberOfCards, mainDeck: mainDeck, extraDeck: extraDeck, sideDeck: sideDeck, creationDate: moment().format()}, function(err, deckDocs) {
         if (err) {
             responseMessages.ErrorCode500(result)
         } else {
@@ -76,12 +80,12 @@ router.put("/:id", (request, result) => {
     const newDeckName = request.body.deckName;
     const newCardAmount = mainDeckUpdate.length + extraDeckUpdate.length + sideDeckUpdate.length
 
-
     Deck.find({_id: deckId}, function(err, docs) {
         if (err || docs === null) {
             responseMessages.ErrorCode412(result);
         } else {
-            Deck.updateOne({_id: deckId}, { $set: {mainDeck: mainDeckUpdate, extraDeck: extraDeckUpdate, sideDeck: sideDeckUpdate, numberOfCards: newCardAmount}}, function(err, docs) {
+            //TODO: Check if newDeckName is empty and if it's not, update the deckName as well
+            Deck.updateOne({_id: deckId}, { $set: {deckName: newDeckName, mainDeck: mainDeckUpdate, extraDeck: extraDeckUpdate, sideDeck: sideDeckUpdate, numberOfCards: newCardAmount}}, function(err, docs) {
                 if (err || docs == null) {
                     responseMessages.ErrorCode500(result)
                 } else {
