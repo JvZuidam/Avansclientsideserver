@@ -52,6 +52,7 @@ router.get("", (request, result) => {
         }
     })
 });
+
 //Get user by id
 router.get("/:id", (request, result) => {
     console.log("Get user by id aangeroepen");
