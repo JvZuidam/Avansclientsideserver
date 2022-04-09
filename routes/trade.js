@@ -26,11 +26,17 @@ router.post("/new", (request, result) => {
     const secondItem = "";
 
     const traderId = request.body.traderId;
+    const traderName = request.body.traderName;
     const tradeeId = request.body.tradeeId;
+    const tradeeName = request.body.tradeeName;
     const cardToTrade = request.body.cardToTrade;
+    const cardTradeName = request.body.cardTradeName;
     const cardToReceive = request.body.cardToReceive;
+    const cardReceiveName = request.body.cardReceiveName;
     const deckToTrade = request.body.deckToTrade;
+    const deckTradeName = request.body.deckTradeName
     const deckToReceive = request.body.deckToReceive;
+    const deckReceiveName = request.body.deckReceiveName
 
     if (cardToTrade == null || cardToReceive == null) {
         // Setting the existing values up for return
@@ -44,7 +50,20 @@ router.post("/new", (request, result) => {
         responseMessages.ErrorCode412(result)
     }
 
-    Trade.create({trader: traderId, tradee: tradeeId, cardToTrade: cardToTrade, cardToReceive: cardToReceive, deckToTrade: deckToTrade, deckToReceive: deckToReceive, creationDate: moment().format()}, function (err, tradeDocs) {
+    Trade.create({
+        trader: traderId,
+        traderName: traderName,
+        tradee: tradeeId,
+        tradeeName: tradeeName,
+        cardToTrade: cardToTrade,
+        cardTradeName: cardTradeName,
+        cardToReceive: cardToReceive,
+        cardReceiveName: cardReceiveName,
+        deckToTrade: deckToTrade,
+        deckTradeName: deckTradeName,
+        deckToReceive: deckToReceive,
+        deckReceiveName: deckReceiveName,
+        creationDate: moment().format()}, function (err, tradeDocs) {
         if (err) {
             console.log(err);
             responseMessages.ErrorCode500(result);
@@ -96,10 +115,14 @@ router.put("/:userid/:id", (request, result) => {
     console.log("Update trade aangeroepen");
     const userId = request.params.userid;
     const tradeId = request.params.id;
-    const deckIdToTrade = request.body.deckToTrade;
-    const deckIdToReceive = request.body.deckToReceive;
     const cardIdToTrade = request.body.cardToTrade;
+    const cardTradeName = request.body.cardTradeName;
     const cardIdToReceive = request.body.cardToReceive;
+    const cardReceiveName = request.body.cardReceiveName;
+    const deckIdToTrade = request.body.deckToTrade;
+    const deckTradeName = request.body.deckTradeName
+    const deckIdToReceive = request.body.deckToReceive;
+    const deckReceiveName = request.body.deckReceiveName
 
     Trade.find({_id: tradeId, trader: userId}, function (err, docs) {
         if (err || docs === null) {
@@ -107,7 +130,7 @@ router.put("/:userid/:id", (request, result) => {
         } else {
             if (deckIdToTrade == null && deckIdToReceive == null) {
                 console.log("inside trade deck");
-                Trade.updateOne({_id: tradeId}, {$set: {cardToTrade: cardIdToTrade, cardToReceive: cardIdToReceive}}, function(err, docs) {
+                Trade.updateOne({_id: tradeId}, {$set: {cardToTrade: cardIdToTrade, cardTradeName: cardTradeName, cardToReceive: cardIdToReceive, cardReceiveName: cardIdToReceive}}, function(err, docs) {
                     if (err || docs == null) {
                         responseMessages.ErrorCode500(result)
                     } else {
@@ -118,7 +141,7 @@ router.put("/:userid/:id", (request, result) => {
                 console.log("inside trade card");
                 console.log(deckIdToTrade);
                 console.log(deckIdToReceive);
-                Trade.updateOne({_id: tradeId}, {$set: {deckToTrade: deckIdToTrade, deckToReceive: deckIdToReceive}}, function(err, docs) {
+                Trade.updateOne({_id: tradeId}, {$set: {deckToTrade: deckIdToTrade, deckTradeName: deckTradeName, deckToReceive: deckIdToReceive, deckReceiveName: deckReceiveName}}, function(err, docs) {
                     if (err || docs == null) {
                         responseMessages.ErrorCode500(result)
                     } else {
