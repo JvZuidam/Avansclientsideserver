@@ -20,7 +20,7 @@ router.use(function (req, res, next) {
 
 
 //Create a new trade
-router.post("/new", (request, result) => {
+router.post("/new/", (request, result) => {
     console.log("Create a new trade");
     const firstItem = "";
     const secondItem = "";
@@ -130,7 +130,7 @@ router.put("/:userid/:id", (request, result) => {
         } else {
             if (deckIdToTrade == null && deckIdToReceive == null) {
                 console.log("inside trade deck");
-                Trade.updateOne({_id: tradeId}, {$set: {cardToTrade: cardIdToTrade, cardTradeName: cardTradeName, cardToReceive: cardIdToReceive, cardReceiveName: cardIdToReceive}}, function(err, docs) {
+                Trade.updateOne({_id: tradeId}, {$set: {cardToTrade: cardIdToTrade, cardTradeName: cardTradeName, cardToReceive: cardIdToReceive, cardReceiveName: cardReceiveName}}, function(err, docs) {
                     if (err || docs == null) {
                         responseMessages.ErrorCode500(result)
                     } else {
