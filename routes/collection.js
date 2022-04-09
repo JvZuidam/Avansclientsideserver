@@ -37,7 +37,6 @@ router.post("/new", (request, result) => {
                 responseMessages.ErrorCode404(result)
             } else {
                Card.find({card_sets : { $elemMatch: {  set_name : setName } }}, function(err, cardDocs) {
-                   console.log(cardDocs);
                    if (err || cardDocs == null) {
                         responseMessages.ErrorCode404(result)
                     } else {
@@ -107,7 +106,6 @@ router.put("/:userid/:id", (request,result) => {
             //Update both collection name and locked state
             Collection.updateOne({_id: collectionId}, { $set: {collectionName: newCollectionName, locked: newLocked}}, function(err, docs) {
                 if (err || docs == null) {
-                    console.log("inside");
                     responseMessages.ErrorCode500(result)
                 } else {
                     responseMessages.SuccessCode200UpdateCollection(result, newCollectionName, newLocked)

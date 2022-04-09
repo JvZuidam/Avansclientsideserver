@@ -34,7 +34,6 @@ router.post("/register", (request, result) => {
         } else {
             User.create({firstName: firstName, lastName: lastName, username: username, email: email, password: password, creationDate: moment().format(), collections: [], decks: [], trades: []}, function (err, docs) {
                 if (err) {
-                    console.log(err);
                     responseMessages.ErrorCode500(result);
                 } else {
                     responseMessages.SuccessCode201User(result, username)
@@ -48,9 +47,6 @@ router.post("/login", (request, result) => {
     console.log("user login aangeroepen");
     const email = request.body.email;
     const password = request.body.password;
-
-    console.log(email);
-    console.log(password);
 
     User.find({email: email, password: password}, function(err, docs) {
         if (err || docs == null) {
