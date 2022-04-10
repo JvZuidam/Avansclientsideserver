@@ -1,5 +1,5 @@
 {
   "env": {
-    "JWT_KEY": "secret"
+    "JWT_KEY": "secret123"
   }
 }

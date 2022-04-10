@@ -8,6 +8,9 @@ const Collection = require("../src/collection")
 const User = require("../src/user")
 const Card = require("../src/card")
 const responseMessages = require("../responseMessages")
+const Deck = require("../src/deck");
+const {request} = require("express");
+const { ObjectId } = require('mongodb');
 
 router.use (bodyParser.json());
 router.use(bodyParser.urlencoded({extended: true}))
@@ -34,7 +37,6 @@ router.post("/new", (request, result) => {
                 responseMessages.ErrorCode404(result)
             } else {
                Card.find({card_sets : { $elemMatch: {  set_name : setName } }}, function(err, cardDocs) {
-                   console.log(cardDocs);
                    if (err || cardDocs == null) {
                         responseMessages.ErrorCode404(result)
                     } else {
@@ -60,10 +62,11 @@ router.post("/new", (request, result) => {
 });
 
 //Get all collections
-router.get ("", (request, result) => {
+router.get ("/:userid", (request, result) => {
     console.log("Get all collections aangeroepen");
+    const userId = request.params.userid;
 
-    Collection.find({}, function(err, docs) {
+    Collection.find({userId: userId}, function(err, docs) {
         if (err || docs == null) {
             responseMessages.ErrorCode412(result);
         } else {
@@ -73,11 +76,12 @@ router.get ("", (request, result) => {
 });
 
 //Get collection by Id
-router.get("/:id", (request, result) => {
+router.get("/:userid/:id", (request, result) => {
     console.log("Get collection by id aangeroepen");
     const collectionId = request.params.id;
+    const userId = request.params.userid;
 
-    Collection.find({_id: collectionId}, function( err, docs) {
+    Collection.find({_id: collectionId, userId: userId}, function( err, docs) {
         if (err || docs == null) {
             responseMessages.ErrorCode412(result);
         } else {
@@ -87,52 +91,64 @@ router.get("/:id", (request, result) => {
 });
 
 //Update collection
-router.put("/:id", (request,result) => {
+router.put("/:userid/:id", (request,result) => {
     console.log("update collection aangeroepen");
     const collectionId = request.params.id;
+    const userId = request.params.userid;
+
     const newCollectionName = request.body.collectionName;
     const newLocked = request.body.locked;
 
-    if (Object.keys(request.body).length === 0) {
-        responseMessages.ErrorCode412(result)
-    } else if (newCollectionName == null) {
-    //    Only change the locked state
-        Collection.update({_id: collectionId},{$set: {locked: newLocked}}, function (err, docs) {
-            if (err) {
-                responseMessages.ErrorCode500(result)
-            } else {
-                responseMessages.SuccessCode200UpdateCollection(result, "", newLocked)
-            }
-        })
-    } else if(newLocked == null) {
-    //    Only change the collectionName
-        Collection.update({_id: collectionId}, {$set: {collectionName: newCollectionName}}, function (err, docs) {
-            if (err) {
-                responseMessages.ErrorCode500(result)
-            } else {
-                responseMessages.SuccessCode200UpdateCollection(result, newCollectionName, "")
-            }
-        })
-    } else {
-    //    Update both collection name and locked state
-        Collection.update({_id: collectionId}, {$set: {collectionName: newCollectionName, locked: newLocked}}, function (err, docs) {
-            if (err) {
-                responseMessages.ErrorCode500(result)
-            } else {
-                responseMessages.SuccessCode200UpdateCollection(result, newCollectionName, newLocked)
-            }
-        })
-    }
+    Collection.find({_id: collectionId, userId: userId}, function(err, docs) {
+        if (err || docs === null) {
+            responseMessages.ErrorCode412(result);
+        }  else {
+            //Update both collection name and locked state
+            Collection.updateOne({_id: collectionId}, { $set: {collectionName: newCollectionName, locked: newLocked}}, function(err, docs) {
+                if (err || docs == null) {
+                    responseMessages.ErrorCode500(result)
+                } else {
+                    responseMessages.SuccessCode200UpdateCollection(result, newCollectionName, newLocked)
+                }
+            })
+        }
+    })
+})
+
+router.put("/card/:id/:cardId", (request, result) => {
+    console.log("Update obtained card aangeroepen");
+    const collectionId = request.params.id;
+    const cardId = request.params.cardId;
+    const obtainedValue = request.body.obtainedValue;
+
+    const objectifiedCollectionId = ObjectId(String(collectionId))
+    const objectifiedCardId = ObjectId(cardId)
+
+    Collection.find({_id: collectionId}, function(err, docs) {
+        if (err || docs === null) {
+            responseMessages.ErrorCode412(result);
+        }  else {
+            //Update both collection name and locked state
+            Collection.updateOne({_id: objectifiedCollectionId, "cards._id": objectifiedCardId}, {$set: {"cards.$.obtained": obtainedValue}}, function(err, docs) {
+                if (err || docs == null) {
+                    responseMessages.ErrorCode500(result)
+                } else {
+                    responseMessages.SuccessCode200UpdateObtainedCard(result, cardId, obtainedValue)
+                }
+            })
+        }
+    })
 })
 
 //Update a card inside the collection
 
 //Delete collection
-router.delete("/:id", (request, result) => {
+router.delete("/:userid/:id", (request, result) => {
     console.log("Delete collection aangeroepen");
     const collectionId = mongoose.Types.ObjectId(request.params.id);
+    const userId = request.params.userid;
 
-    Collection.deleteOne({_id: collectionId}, function (err, docs) {
+    Collection.deleteOne({_id: collectionId, userid: userId}, function (err, docs) {
         if (err || docs == null) {
             responseMessages.SuccessCode204(result);
         } else {

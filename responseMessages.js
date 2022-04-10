@@ -94,7 +94,15 @@ function SuccessCode200UpdateCollection(result, collectionName, locked) {
     });
 }
 
-function SuccessCode200UpdateDeck(result, deckName, mainDeck, sideDeck, extraDeck) {
+function SuccessCode200UpdateObtainedCard(result, cardId, obtained) {
+    result.status(200).json({
+        code: 200,
+        message: {UpdatedObtainedCard: cardId, obtainedStatus: obtained},
+        datetime: moment().format()
+    });
+}
+
+function SuccessCode200UpdateDeck(result, mainDeck, sideDeck, extraDeck, deckName = "No new Name") {
     result.status(200).json({
         code: 200,
         message: {updatedDeckName: deckName, updatedMainDeck: mainDeck, updatedSideDeck: sideDeck, updatedExtraDeck: extraDeck},
@@ -106,6 +114,14 @@ function SuccessCode200UpdateTrade(result, itemToTrade, itemToReceive) {
     result.status(200).json({
         code: 200,
         message: {updatedItemToTrade: itemToTrade, updatedItemToReceive: itemToReceive},
+        datetime: moment().format()
+    });
+}
+
+function SuccessCode200UpdateUser(result, firstName, lastName, email, username) {
+    result.status(200).json({
+        code: 200,
+        message: {firstName: firstName, lastName: lastName, email: email, username: username},
         datetime: moment().format()
     });
 }
@@ -159,8 +175,10 @@ module.exports = {
     SuccessCode200GetAll,
     SuccessCode200Auth,
     SuccessCode200UpdateCollection,
+    SuccessCode200UpdateObtainedCard,
     SuccessCode200UpdateDeck,
     SuccessCode200UpdateTrade,
+    SuccessCode200UpdateUser,
     SuccessCode201User,
     SuccessCode201Collection,
     SuccessCode201Deck,
