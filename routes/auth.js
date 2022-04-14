@@ -48,7 +48,7 @@ router.post("/login", (request, result) => {
     const email = request.body.email;
     const password = request.body.password;
 
-    User.find({email: email, password: password}, function(err, docs) {
+    User.findOne({email: email, password: password}, function(err, docs) {
         if (err || docs == null) {
             responseMessages.ErrorCode404(result);
         } else {
